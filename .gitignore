@@ -3,6 +3,9 @@
 .env.local
 .env.*.local
 
+# node modules
+node_modules/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -64,7 +67,7 @@ htmlcov/
 .python-version
 
 # Poetry
-poetry.lock
+# poetry.lock
 
 # Logs
 *.log
