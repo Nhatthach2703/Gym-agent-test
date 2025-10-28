@@ -560,8 +560,8 @@ def chat_loop(agent_executor, llm):
             # Lưu vào conversation history
             conversation_history.append((user_input, response))
 
-            if len(conversation_history) > 10:
-                conversation_history = conversation_history[-10:]
+            if len(conversation_history) > 30:
+                conversation_history = conversation_history[-30:]
 
             # Hiển thị response trong panel đẹp
             response_panel = Panel(

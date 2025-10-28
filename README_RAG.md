@@ -2,14 +2,24 @@
 
 ## 🚀 Tính năng mới của RAG Gym Agent
 
-### 📋 Cài đặt
+### 📋 Cài đặt (Poetry)
 ```bash
-pip install -r requirements_rag.txt
+# Cài dependencies bằng Poetry
+poetry install
+
+# Nếu log báo thiếu thư viện, cài bổ sung (khớp với main_RAG.py)
+poetry add \
+  langchain langchain-core langchain-community \
+  langchain-google-genai google-generativeai \
+  chromadb python-dotenv rich
 ```
 
 ### 🔧 Thiết lập
 1. Tạo file `.env` với `GOOGLE_API_KEY=your_api_key`
-2. Chạy: `python src/gym_agent_test/main_RAG.py`
+2. Chạy bằng Poetry:
+```bash
+poetry run python src/gym_agent_test/main_RAG.py
+```
 
 ## 🎯 Tính năng RAG mới
 
@@ -34,7 +44,7 @@ pip install -r requirements_rag.txt
 ### 3. 🧠 Conversation Memory + Profile
 - Nhớ thông tin cá nhân: chiều cao, cân nặng, mục tiêu
 - **MỚI:** Theo dõi chấn thương và đưa ra tư vấn phù hợp
-- Lưu lịch sử 10 cuộc hội thoại gần nhất
+- Lưu lịch sử 30 cuộc hội thoại gần nhất
 - Gợi ý câu hỏi dựa trên profile
 
 ## 📊 So sánh với phiên bản gốc
@@ -82,6 +92,15 @@ pip install -r requirements_rag.txt
 3. `calc_bmi(height_weight)` - Tính BMI
 4. `gym_advice_tool(question)` - Backup tư vấn tổng quát
 
+### Model Config (theo main_RAG.py)
+```python
+# LLM
+ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
+
+# Embeddings
+GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+```
+
 ### Profile Tracking:
 - Height, Weight, BMI
 - Goals (tăng cơ, giảm cân, etc.)
@@ -90,6 +109,45 @@ pip install -r requirements_rag.txt
 ## 🚀 Upgrade path
 
 Từ bản gốc sang bản RAG:
-1. Cài thêm dependencies RAG
-2. Thay `main.py` → `main_RAG.py`
-3. Enjoy RAG features! 🎉
+1. `poetry install`
+2. Tạo `.env` với `GOOGLE_API_KEY`
+3. Chạy: `poetry run python src/gym_agent_test/main_RAG.py`
+4. Enjoy RAG features! 🎉
+
+## 🛠️ Xử lý lỗi onnxruntime khi `poetry install`
+
+Nếu gặp lỗi dạng:
+
+```
+Installing onnxruntime (1.23.2): Failed
+Unable to find installation candidates for onnxruntime
+```
+
+Thử lần lượt các cách sau (dừng khi thành công):
+
+1) Regenerate lockfile (sạch cache)
+```bash
+poetry lock --no-cache --regenerate
+poetry install
+```
+
+2) Cập nhật riêng gói onnxruntime
+```bash
+poetry update --no-cache onnxruntime
+```
+
+3) Pin về phiên bản tương thích (khuyên dùng CPU):
+```bash
+# Windows/macOS (x86_64, ARM) thường ổn định ở 1.18.0
+poetry add onnxruntime==1.18.0
+poetry install
+```
+
+4) Windows dùng GPU (DirectML) thì dùng bản phù hợp:
+```bash
+poetry add onnxruntime-directml==1.17.1
+```
+
+Ghi chú:
+- Dự án này dùng Google Embeddings (models/text-embedding-004), nên onnxruntime chỉ là phụ thuộc gián tiếp (từ chromadb). Pin phiên bản ổn định thường giải quyết được.
+- Nếu vẫn lỗi, chạy lệnh với `-v` để xem log chi tiết và kiểm tra wheel tương thích với OS/CPU/Python.

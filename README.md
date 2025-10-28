@@ -43,7 +43,7 @@ cd Gym-agent-test
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-### **Step 3: Install Dependencies**
+### **Step 3: Install Dependencies (Poetry)**
 
 ```bash
 # Install packages
@@ -51,6 +51,23 @@ poetry install
 
 # Check installed dependencies
 poetry show
+
+# If logs show missing libs for RAG, add explicitly (matches main_RAG.py)
+poetry add
+  langchain langchain-core langchain-community \
+  langchain-google-genai google-generativeai \
+  chromadb python-dotenv rich
+
+# If install fails for onnxruntime (platform wheel not found):
+# Try step-by-step and stop when success
+# 1) Regenerate lockfile
+poetry lock --no-cache --regenerate && poetry install
+# 2) Update specific package
+poetry update --no-cache onnxruntime
+# 3) Pin a stable version
+poetry add onnxruntime==1.18.0
+# 4) (Windows GPU) DirectML variant
+poetry add onnxruntime-directml==1.17.1
 ```
 
 ### **Step 4: Setup Gemini API Key**
@@ -95,11 +112,22 @@ llm = ChatGoogleGenerativeAI(
 
 ## 🎮 Usage
 
-### **Run the Agent:**
+### **Run the Agent (Poetry):**
 
 ```bash
+# Agent cơ bản
 poetry run python src/gym_agent_test/main.py
+
+# Agent RAG
+poetry run python src/gym_agent_test/main_RAG.py
 ```
+
+### **RAG Execution Flow (theo main_RAG.py)**
+1) Kết nối LLM Gemini (`gemini-2.5-flash`)
+2) Khởi tạo embeddings `models/text-embedding-004`
+3) Tạo `Document` và 2 vector stores (`nutrition`, `exercises`)
+4) Tạo Agent với tools: `calc_bmi`, `nutrition_advisor_rag`, `exercise_advisor_rag`, `gym_advice_tool`
+5) Vòng lặp chat với memory (tối đa 30 hội thoại)
 
 ### **Test Commands:**
 
