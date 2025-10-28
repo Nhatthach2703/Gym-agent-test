@@ -15,7 +15,13 @@ dependencies = [
     "langchain-community>=0.3.0",
     "langchainhub>=0.1.0",
     "langchain-experimental (>=0.3.4,<0.4.0)",
-    "rich (>=14.2.0,<15.0.0)"
+    "rich (>=14.2.0,<15.0.0)",
+    # RAG dependencies
+    "chromadb>=0.4.22",
+    "numpy>=1.24.3",
+    "sentence-transformers>=2.2.2",
+    # Optional for better performance  
+    "faiss-cpu>=1.7.4"
 ]
 
 [tool.poetry]
