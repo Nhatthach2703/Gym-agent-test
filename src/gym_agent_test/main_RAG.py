@@ -64,7 +64,7 @@ def initialize_rag():
 
             # Khởi tạo embeddings
             embeddings = GoogleGenerativeAIEmbeddings(
-                model="models/text-embedding-004", google_api_key=api_key
+                model="gemini-embedding-001", google_api_key=api_key
             )
 
             # Dữ liệu dinh dưỡng món ăn Việt Nam
